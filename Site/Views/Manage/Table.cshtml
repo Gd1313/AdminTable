@@ -1,0 +1,233 @@
+﻿@model IEnumerable<Site.Models.Table>
+
+@{
+    ViewData["Title"] = "Table";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>            </h2>
+
+
+<table class="table">
+    <thead>
+        <tr>
+
+        <tr>
+
+            <th><input type="checkbox" id="select_all"></th>
+
+            <th>
+                @Html.DisplayNameFor(model => model.UserName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AutarizationDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RegistrationDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Status)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+
+
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="utf-8">
+        <title>Users Table</title>
+
+        <style>
+            #form {
+                width: 490px;
+                height: 0px;
+                position: absolute;
+                top: 15%;
+                left: 22px;
+                margin: auto;
+                background: #fff;
+            }
+
+            .d {
+                border: 1px solid black;
+                border-radius: 10%;
+                padding: 10px;
+                color: #9d9d9d;
+                background: #333;
+                font-weight: 800;
+            }
+
+            #blackout:target {
+                display: block;
+            }
+
+            .close {
+                margin-left: 50px;
+                margin-top: 5px;
+            }
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="navbar-collapse collapse">
+            <div id="blackout">
+                <div id="form">
+                    <p>
+                        @*<div class="btn-group" role="group">
+                                <button type="button" class="btn btn-default" onclick="Locking()">Block User</button>
+                                <button type="button" class="btn btn-default" onclick="Unlocking()">Unlock User</button>
+                                <button type="button" class="btn btn-default" onclick="Delete()">Delete User</button>
+                                <a href="#" class="close">Close Toolbar</a>
+                            </div>*@
+
+                        @*
+                            <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+
+
+                                <div class="btn-group" role="group">
+                                    <button id="btnGroupDrop1" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        Dropdown
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                                        <button type="button" class="btn btn-default" onclick="Locking()">Block User</button>
+                                        <button type="button" class="btn btn-default" onclick="Unlocking()">Unlock User</button>
+                                        <button type="button" class="btn btn-default" onclick="Delete()">Delete User</button>
+                                    </div>
+                                </div>
+                            </div>
+                        *@
+                    </p>
+
+
+                </div>
+            </div>
+        </div>
+
+        <nav class="navbar navbar-light" style="background-color: #5b6073;" width="">
+            <button type="button" class="btn btn-success btn-circle btn-lg" onclick="Locking()" title="Lock user"><i class="glyphicon glyphicon-link"></i></button>
+            <button type="button" class="btn btn-warning btn-circle btn-lg" onclick="Delete()" title="Delete user"><i class="glyphicon glyphicon-remove"></i></button>
+            <button type="button" class="btn btn-danger btn-circle btn-lg" onclick="Unlocking()" title="Unlock user"><i class="glyphicon glyphicon-heart"></i></button>
+        </nav>
+
+        @*
+            <a class="d" href="#blackout">ToolBar</a>*@
+
+
+    </body>
+</html>
+
+<br />
+<br />
+<br />
+<br />
+
+
+<tbody @foreach (var item in Model) { 
+    <tr>
+    <td>
+        <input class="checkbox" type="checkbox" name="statuses" value="@item.UserName">
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.UserName)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.AutarizationDate)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.RegistrationDate)
+    </td>
+    <td>
+        @if (item.Status == true)
+        {
+            <p>Active</p>
+        }
+        @if (item.Status == false)
+        {
+            <p>Blocked</p>
+        }
+    </td>
+
+
+
+</tr>
+}
+    </tbody>
+
+</table>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript">
+
+    $('#select_all').click(function () {
+        var c = this.checked;
+        $(':checkbox').prop('checked', c);
+    });
+function Locking() {
+$.ajax({
+type: 'POST',
+url: "@Url.Action("LockUser", "Account")",
+data: { arr: getCheckedCheckBoxes() },
+success: function (data) {
+if (data == true) {
+location.reload();
+}
+else {
+}
+},
+error: function () {
+alert("Error");
+}
+});
+}
+function Unlocking() {
+$.ajax({
+type: 'POST',
+url: "@Url.Action("UnLockUser", "Account")",
+data: { arr: getCheckedCheckBoxes() },
+success: function (data) {
+if (data == true) {
+location.reload();
+}
+else {
+}
+},
+error: function () {
+alert("Error");
+}
+});
+}
+function Delete() {
+$.ajax({
+type: 'POST',
+url: "@Url.Action("DeleteUser", "Account")",
+data: { arr: getCheckedCheckBoxes() },
+success: function (data) {
+if (data == true) {
+location.reload();
+}
+else {
+}
+},
+error: function () {
+alert("Error");
+}
+});
+}
+
+function getCheckedCheckBoxes() {
+var checkboxes = document.getElementsByClassName('checkbox');
+var checkboxesChecked = [];
+for (var index = 0; index < checkboxes.length; index++) {
+if (checkboxes[index].checked) {
+checkboxesChecked.push(checkboxes[index].value);
+}
+}
+return checkboxesChecked;
+    }
+  
+  
+
+    </script>
+
